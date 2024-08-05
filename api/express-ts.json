@@ -1,0 +1,6 @@
+{
+  "codeStyle": "godaddy",
+  "gitInit": true,
+  "server": "express",
+  "typescript": true
+}

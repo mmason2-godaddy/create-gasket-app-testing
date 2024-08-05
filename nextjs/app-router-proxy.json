@@ -1,0 +1,9 @@
+{
+  "typescript": false,
+  "nextServerType": "appRouter",
+  "nextDevProxy": true,
+  "addSitemap": false,
+  "hasGasketIntl": true,
+  "useRedux": false,
+  "gitInit": true
+}

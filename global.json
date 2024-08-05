@@ -1,0 +1,7 @@
+{
+  "appDescription": "Gasket App",
+  "packageManager": "npm",
+  "testPlugin": "none",
+  "testPlugins": [],
+  "gitInit": true
+}

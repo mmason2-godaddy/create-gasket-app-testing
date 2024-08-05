@@ -1,0 +1,10 @@
+{
+  "typescript": false,
+  "nextServerType": "customServer",
+  "nextDevProxy": false,
+  "addSitemap": false,
+  "hasGasketIntl": true,
+  "useRedux": false,
+  "gitInit": true,
+  "server": "express"
+}
