@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "start": "node index.js",
-    "clean:apps": "rm -rf __apps__"
+    "clean:apps": "rm -rf __apps__",
+    "clean:files": "find !(node_modules) -exec rm -rf {} +"
   },
   "keywords": [],
   "author": "",

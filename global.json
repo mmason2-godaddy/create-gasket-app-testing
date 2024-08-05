@@ -3,5 +3,5 @@
   "packageManager": "npm",
   "testPlugin": "none",
   "testPlugins": [],
-  "gitInit": true
+  "gitInit": false
 }

@@ -1,6 +1,6 @@
 {
   "codeStyle": "godaddy",
-  "gitInit": true,
+  "gitInit": false,
   "server": "fastify",
   "typescript": true
 }

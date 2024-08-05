@@ -5,5 +5,5 @@
   "addSitemap": false,
   "hasGasketIntl": true,
   "useRedux": false,
-  "gitInit": true
+  "gitInit": false
 }
