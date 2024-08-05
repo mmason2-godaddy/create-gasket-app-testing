@@ -148,14 +148,17 @@ async function buildApp(appType) {
 }
 
 (async () => {
-  await createAppsDir();
   const { useLocalPackage, appType } = await prompts(questions);
+  if (!appType) return;
+
+  await createAppsDir();
 
   if (appType === 'all') {
     const appTypes = questions[1].choices.map(choice => choice.value).filter(type => type !== 'all');
 
     for (const type of appTypes) {
       await runCreate(useLocalPackage, type);
+      if (process.env.BUILD_APPS) await buildApp(appType);
     }
 
     return;
@@ -163,5 +166,5 @@ async function buildApp(appType) {
 
   await runCreate(useLocalPackage, appType);
   if (process.env.BUILD_APPS) await buildApp(appType);
-  await validateFiles(appType);
+  await validateFiles(appType); // future files check
 })();
