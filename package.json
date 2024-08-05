@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node index.js",
     "clean:apps": "rm -rf __apps__",
-    "clean:files": "find !(node_modules) -exec rm -rf {} +"
+    "clean:files": "bash clean-files.sh"
   },
   "keywords": [],
   "author": "",
