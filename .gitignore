@@ -6,3 +6,7 @@ report.build.json
 report.render.json
 report.files.json
 report.test.json
+report.lint.json
+report.start.json
+report.local.json
+report.preview.json

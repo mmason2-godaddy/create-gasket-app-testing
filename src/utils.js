@@ -64,6 +64,10 @@ async function createReportFiles() {
   await createReportFile('report.files.json');
   await createReportFile('report.render.json');
   await createReportFile('report.test.json');
+  await createReportFile('report.start.json');
+  await createReportFile('report.local.json');
+  await createReportFile('report.preview.json');
+  await createReportFile('report.lint.json');
 }
 
 function printReport(reportFileName) {
