@@ -2,9 +2,11 @@
   "name": "create-gasket-app-testing",
   "version": "1.0.0",
   "description": "",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "build:apps": "bash ./scripts/build-apps.sh",
+    "start": "node src/index.js",
+    "build": "node src/index.js build_only",
+    "report": "node src/index.js print_reports",
     "clean:apps": "rm -rf __apps__",
     "clean:files": "bash ./scripts/clean-files.sh",
     "clean:next": "bash ./scripts/clean-next-dirs.sh"

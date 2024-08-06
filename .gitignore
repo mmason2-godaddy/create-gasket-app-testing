@@ -1,3 +1,8 @@
 /node_modules
 /__apps__
 .env
+report.create.json
+report.build.json
+report.render.json
+report.files.json
+report.test.json
