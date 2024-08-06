@@ -81,6 +81,7 @@ async function runBuild(appType) {
 
     cmd.stderr.on('data', async function (data) {
       stderr += data.toString();
+      console.log(data.toString());
       if (!stderr.includes('error')) return;
       errors.push(stderr);
     });
