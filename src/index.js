@@ -37,6 +37,7 @@ async function runCreate(useLocalPackage, appType) {
 
     cmd.stderr.on('data', function (data) {
       stderr += data.toString();
+      console.error(data.toString());
       if (!stderr.includes('error')) return;
       errors.push(stderr);
     });

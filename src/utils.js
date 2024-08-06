@@ -22,15 +22,15 @@ function getPreset(appType, useLocalPackage) {
 
   if (useLocalPackage) {
     if (
-      !process.env.NEXTJS_PRESET_PATH ||
-      !process.env.API_PRESET_PATH
+      !process.env.OS_PRESET_NEXTJS ||
+      !process.env.OS_PRESET_API
     ) {
-      throw new Error('You must set the NEXTJS_PRESET_PATH and API_PRESET_PATH environment variables to use local packages');
+      throw new Error('You must set the OS_PRESET_NEXTJS and OS_PRESET_API environment variables to use local packages');
     }
 
     return isNextJs ?
-      `${process.env.NEXTJS_PRESET_PATH}` :
-      `${process.env.API_PRESET_PATH}`;
+      `${process.env.OS_PRESET_NEXTJS}` :
+      `${process.env.OS_PRESET_API}`;
   }
 
   return isNextJs ?

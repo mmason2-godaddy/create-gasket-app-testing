@@ -26,8 +26,8 @@ Apps are created in the `__apps__` directory.
 Create a `.env` file in the root of the project with the following:
 
 ```sh
-NEXTJS_PRESET_PATH=path
-API_PRESET_PATH=path
+OS_PRESET_NEXTJS=<path>
+OS_PRESET_API=path
 BUILD_APPS=1 # Build the apps post create
 ```
 
@@ -56,3 +56,11 @@ All reports on untracked and they are in progress. Reports are populated after r
 - `npm run clean:files` - delete all files but leave `node_modules`(performance reasons)
 - `npm run clean:next` - delete the `.next` directory in all the apps
 
+## Todo
+
+- [ ] Internal Presets
+- [ ] NPM Registry support
+- [ ] Clean up and document
+- [ ] Automate render testing
+- [ ] Automate NPM script testing
+- [ ] Implement file validation
