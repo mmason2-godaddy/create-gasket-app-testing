@@ -4,8 +4,10 @@
   "description": "",
   "scripts": {
     "start": "node index.js",
+    "build:apps": "bash ./scripts/build-apps.sh",
     "clean:apps": "rm -rf __apps__",
-    "clean:files": "bash clean-files.sh"
+    "clean:files": "bash ./scripts/clean-files.sh",
+    "clean:next": "bash ./scripts/clean-next-dirs.sh"
   },
   "keywords": [],
   "author": "",
