@@ -3,7 +3,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 const { writeFile } = require('fs').promises;
-const { spawn } = require('child_process');
+const { spawn, execSync, exec } = require('child_process');
 const prompts = require('prompts');
 const questions = require('./questions');
 const {
@@ -105,7 +105,69 @@ async function runBuild(appType) {
   });
 }
 
-async function runLocal(appType) {} // TODO
+// TODO - needs a little work
+// Only handles next server
+// Custom server is another node process :/
+async function runLocal(appType) {
+  return new Promise((resolve, reject) => {
+    let errors = [];
+    let stderr = '';
+    let port = '';
+
+    function killProcess(port) {
+      setTimeout(() => {
+        const lsof = execSync(`lsof -Fp -sTCP:LISTEN -i:${port}`).toString();
+        const pid = lsof.split('\n')[0].replace('p', '');
+        process.kill(pid);
+        resolve();
+      }, 500);
+    }
+
+    const cmd = spawn('npm', ['run', 'local'], {
+      cwd: `__apps__/${appType}`
+    });
+
+    cmd.stdout.on('data', async function (data) {
+      const std = data.toString();
+      console.log(std);
+      if (std.includes('- Local:        http://localhost:')) {
+        const host = std.match(/http:\/\/localhost:[0-9].+/)[0];
+        port = host.split(':')[2];
+        console.log('host', host);
+        await fetch(host);
+      }
+
+      if (std.includes('GET / 200 in')) {
+        killProcess(port);
+      }
+    });
+
+    cmd.stderr.on('data', function (data) {
+      stderr += data.toString();
+      console.error(data.toString());
+      if (!stderr.includes('error')) return;
+      errors.push(stderr);
+      // killProcess(port);
+    });
+
+    cmd.on('exit', async function (code) {
+      console.log('child process exited with code ' + code.toString());
+      const report = require('../report.local.json');
+      if (errors.length) {
+        report[appType] = {
+          errors
+        };
+      } else {
+        report[appType] = {
+          success: true
+        };
+      }
+
+      await writeFile('./report.local.json', JSON.stringify(report, null, 2), 'utf8');
+      resolve();
+    });
+  });
+} // TODO
 
 async function runStart(appType) {} // TODO
 
@@ -144,9 +206,11 @@ async function runCustomCommands() {} // TODO
     for (const type of appTypes) {
       await runCreate(useLocalPackage, type);
       if (process.env.BUILD_APPS) await runBuild(type);
+      if (process.env.RUN_LOCAL) await runLocal(type);
     }
   } else {
     await runCreate(useLocalPackage, appType);
     if (process.env.BUILD_APPS) await runBuild(appType);
+    if (process.env.RUN_LOCAL) await runLocal(appType);
   }
 })();
