@@ -92,6 +92,7 @@ function printReports() {
   printReport('report.files.json');
   printReport('report.render.json');
   printReport('report.test.json');
+  printReport('report.local.json');
 }
 
 module.exports = {
