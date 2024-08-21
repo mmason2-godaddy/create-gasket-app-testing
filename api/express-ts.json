@@ -2,5 +2,6 @@
   "codeStyle": "godaddy",
   "gitInit": false,
   "server": "express",
-  "typescript": true
+  "typescript": true,
+  "useSwagger": true
 }

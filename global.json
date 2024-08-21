@@ -3,5 +3,7 @@
   "packageManager": "npm",
   "testPlugin": "none",
   "testPlugins": [],
-  "gitInit": false
+  "gitInit": false,
+  "useDocs": true,
+  "useDocusaurus": true
 }
