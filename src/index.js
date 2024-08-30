@@ -1,194 +1,42 @@
 #!/usr/bin/env node
-const path = require('path');
-const dotenv = require('dotenv');
-dotenv.config();
-const { writeFile } = require('fs').promises;
-const { spawn, execSync, exec } = require('child_process');
-const prompts = require('prompts');
-const questions = require('./questions');
-const {
-  getConfigFile,
-  getPresetFlag,
-  getPreset,
+import 'dotenv/config';
+import prompts from 'prompts';
+import questions from './questions.js';
+import {
+  runCreate,
+  runBuild,
+} from './commands/index.js';
+import {
+  createRegistryFile,
   createAppsDir,
   createReportFiles,
   printReports,
-} = require('./utils');
+} from './utils.js';
 
+async function runStart(appType) { } // TODO
 
-async function runCreate(useLocalPackage, appType) {
-  return new Promise((resolve, reject) => {
-    let errors = [];
-    let stderr = '';
+async function runPreview(appType) { } // TODO
 
-    const cmd = spawn('create-gasket-app', [
-      appType,
-      '--config',
-      getConfigFile(appType),
-      getPresetFlag(useLocalPackage),
-      getPreset(appType, useLocalPackage)
-    ], {
-      cwd: '__apps__'
-    });
+async function runLint(appType) { } // TODO
 
-    cmd.stdout.on('data', function (data) {
-      console.log(data.toString());
-    });
+async function runTest(appType) { } // TODO
 
-    cmd.stderr.on('data', function (data) {
-      stderr += data.toString();
-      console.error(data.toString());
-      if (!stderr.includes('error')) return;
-      errors.push(stderr);
-    });
+async function runCustomCommands() { } // TODO
 
-    cmd.on('exit', async function (code) {
-      console.log('child process exited with code ' + code.toString());
-      const report = require('../report.create.json');
-      if (errors.length) {
-        report[appType] = {
-          errors
-        };
-      } else {
-        report[appType] = {
-          success: true
-        };
-      }
-
-      await writeFile('./report.create.json', JSON.stringify(report, null, 2), 'utf8');
-      resolve();
-    });
-  });
-}
-
-async function runBuild(appType) {
-  return new Promise((resolve, reject) => {
-    let errors = [];
-    let stderr = '';
-
-    const cmd = spawn('npm', ['run', 'build'], {
-      cwd: `__apps__/${appType}`
-    });
-
-    cmd.stdout.on('data', function (data) {
-      // TS errors
-      if (data.toString().includes('error')) {
-        errors.push(data.toString());
-        return;
-      }
-      console.log(data.toString());
-    });
-
-    cmd.stderr.on('data', async function (data) {
-      stderr += data.toString();
-      console.log(data.toString());
-      if (!stderr.includes('error')) return;
-      errors.push(stderr);
-    });
-
-    cmd.on('exit', async function (code) {
-      console.log('child process exited with code ' + code.toString());
-      const report = require('../report.build.json');
-      if (errors.length) {
-        report[appType] = {
-          errors
-        };
-      } else {
-        report[appType] = {
-          success: true
-        };
-      }
-
-      await writeFile('./report.build.json', JSON.stringify(report, null, 2), 'utf8');
-      resolve();
-    });
-  });
-}
-
-// TODO - needs a little work
-// Only handles next server
-// Custom server is another node process :/
-async function runLocal(appType) {
-  return new Promise((resolve, reject) => {
-    let errors = [];
-    let stderr = '';
-    let port = '';
-
-    function killProcess(port) {
-      setTimeout(() => {
-        const lsof = execSync(`lsof -Fp -sTCP:LISTEN -i:${port}`).toString();
-        const pid = lsof.split('\n')[0].replace('p', '');
-        process.kill(pid);
-        resolve();
-      }, 500);
-    }
-
-    const cmd = spawn('npm', ['run', 'local'], {
-      cwd: `__apps__/${appType}`
-    });
-
-    cmd.stdout.on('data', async function (data) {
-      const std = data.toString();
-      console.log(std);
-      if (std.includes('- Local:        http://localhost:')) {
-        const host = std.match(/http:\/\/localhost:[0-9].+/)[0];
-        port = host.split(':')[2];
-        console.log('host', host);
-        await fetch(host);
-      }
-
-      if (std.includes('GET / 200 in')) {
-        killProcess(port);
-      }
-    });
-
-    cmd.stderr.on('data', function (data) {
-      stderr += data.toString();
-      console.error(data.toString());
-      if (!stderr.includes('error')) return;
-      errors.push(stderr);
-      // killProcess(port);
-    });
-
-    cmd.on('exit', async function (code) {
-      console.log('child process exited with code ' + code.toString());
-      const report = require('../report.local.json');
-      if (errors.length) {
-        report[appType] = {
-          errors
-        };
-      } else {
-        report[appType] = {
-          success: true
-        };
-      }
-
-      await writeFile('./report.local.json', JSON.stringify(report, null, 2), 'utf8');
-      resolve();
-    });
-  });
-} // TODO
-
-async function runStart(appType) {} // TODO
-
-async function runPreview(appType) {} // TODO
-
-async function runLint(appType) {} // TODO
-
-async function runTest(appType) {} // TODO
-
-async function runCustomCommands() {} // TODO
-
-(async () => {
+async function setup() {
   await createAppsDir();
   await createReportFiles();
-  const appTypes = questions[1].choices.map(choice => choice.value).filter(type => type !== 'all');
+}
+
+async function handleArgs() {
+  const appTypes = questions[1].choices
+    .map(choice => choice.value).filter(type => type !== 'all');
   const buildOnly = process.argv[2] === 'build_only';
   const printOnly = process.argv[2] === 'print_reports';
 
   if (printOnly) {
     printReports();
-    return;
+    return true;
   }
 
   if (buildOnly) {
@@ -196,21 +44,59 @@ async function runCustomCommands() {} // TODO
       await runBuild(type);
     }
 
-    return
+    return true;
   }
 
-  const { useLocalPackage, appType } = await prompts(questions);
+  return false;
+}
+
+async function main() {
+  await setup();
+  if (await handleArgs()) return;
+
+  const appTypes = questions[1].choices
+    .map(choice => choice.value)
+    .filter(type =>
+      type !== 'all' &&
+      type !== 'all-os' &&
+      type !== 'all-internal'
+    );
+  const { useLocalPackage = true, appType } = await prompts(questions);
   if (!appType) return; // exit if no appType selected
+  await createRegistryFile(appType);
 
   if (appType === 'all') {
     for (const type of appTypes) {
       await runCreate(useLocalPackage, type);
-      if (process.env.BUILD_APPS) await runBuild(type);
-      if (process.env.RUN_LOCAL) await runLocal(type);
+      if (process.env.RUN_BUILD) await runBuild(type);
+    }
+  } else if (appType === 'all-os') {
+    const osAppTypes = appTypes
+      .filter(type =>
+        !type.includes('internal') &&
+        !type.includes('webapp') &&
+        !type.includes('hcs')
+      );
+    for (const type of osAppTypes) {
+      await runCreate(useLocalPackage, type);
+      if (process.env.RUN_BUILD) await runBuild(type);
+    }
+
+  } else if (appType === 'all-internal') {
+    const internalAppTypes = appTypes
+      .filter(type =>
+        type.includes('internal') ||
+        type.includes('webapp') ||
+        type.includes('hcs')
+      );
+    for (const type of internalAppTypes) {
+      await runCreate(useLocalPackage, type);
+      if (process.env.RUN_BUILD) await runBuild(type);
     }
   } else {
     await runCreate(useLocalPackage, appType);
-    if (process.env.BUILD_APPS) await runBuild(appType);
-    if (process.env.RUN_LOCAL) await runLocal(appType);
+    if (process.env.RUN_BUILD) await runBuild(appType);
   }
-})();
+};
+
+main();

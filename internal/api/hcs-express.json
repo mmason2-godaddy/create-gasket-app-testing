@@ -1,0 +1,8 @@
+{
+  "codeStyle": "godaddy",
+  "gitInit": false,
+  "server": "express",
+  "typescript": false,
+  "useSwagger": true,
+  "hasGasketIntl": true
+}

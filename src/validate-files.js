@@ -1,4 +1,4 @@
-module.exports = async function validateFiles(appType) {
+export default async function validateFiles(appType) {
   const cwd = '__apps__';
   const dir = getConfigDirectory(appType);
   const { files } = require(path.join(__dirname, '..', dir, `${appType}.json`));

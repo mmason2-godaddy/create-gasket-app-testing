@@ -1,11 +1,22 @@
-const path = require('path');
-const { mkdir, access, writeFile } = require('fs').promises;
+import path from 'path';
+import { mkdir, access, writeFile } from 'fs/promises';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
-function getConfigDirectory(appType) {
-  return appType.includes('router') ? 'nextjs' : 'api';
+function isInternal(appType) {
+  return appType.includes('webapp') ||
+    appType.includes('internal') ||
+    appType.includes('hcs');
 }
 
-function getConfigFile(appType) {
+export function getConfigDirectory(appType) {
+  const parentDir = isInternal(appType) ? 'internal' : 'open-source';
+  return appType.includes('router') ? `${parentDir}/nextjs` : `${parentDir}/api`;
+}
+
+export function getConfigFile(appType) {
   const dir = getConfigDirectory(appType);
   const configPath = path.join(__dirname, '..', dir, `${appType}.json`);
   const config = require(configPath);
@@ -13,11 +24,36 @@ function getConfigFile(appType) {
   return JSON.stringify({ ...globalConfig, ...config });
 }
 
-function getPresetFlag(useLocalPackage) {
+export function getPresetFlag(useLocalPackage) {
   return useLocalPackage ? '--preset-path' : '--presets';
 }
 
-function getPreset(appType, useLocalPackage) {
+function getInternalPreset(appType, useLocalPackage) {
+  const isNextJs = appType.includes('webapp');
+  const isApi = appType.includes('internal');
+  const isHcs = appType.includes('hcs');
+
+  if (isNextJs) return process.env.INTERNAL_PRESET_WEBAPP;
+  if (isApi) return process.env.INTERNAL_PRESET_API;
+  if (isHcs) return process.env.INTERNAL_PRESET_HCS;
+  throw new Error('Internal remote presets are not yet supported.');
+}
+
+export async function createRegistryFile(appType) {
+  if (isInternal(appType)) {
+    try {
+      await access('./.npmrc');
+    } catch {
+      await writeFile('./.npmrc', `registry=${process.env.INTERNAL_REGISTRY}`, 'utf8');
+    }
+  }
+}
+
+export function getPreset(appType, useLocalPackage) {
+  if (isInternal(appType)) {
+    return getInternalPreset(appType, useLocalPackage);
+  }
+
   const isNextJs = appType.includes('router');
 
   if (useLocalPackage) {
@@ -38,7 +74,7 @@ function getPreset(appType, useLocalPackage) {
     `@gasket/preset-api@next`;
 }
 
-async function createAppsDir() {
+export async function createAppsDir() {
   try {
     await mkdir('__apps__');
   } catch (e) {
@@ -48,7 +84,7 @@ async function createAppsDir() {
   }
 }
 
-async function createReportFile(filename) {
+export async function createReportFile(filename) {
   try {
     await access(filename);
   } catch (e) {
@@ -58,7 +94,7 @@ async function createReportFile(filename) {
   }
 }
 
-async function createReportFiles() {
+export async function createReportFiles() {
   await createReportFile('report.create.json');
   await createReportFile('report.build.json');
   await createReportFile('report.files.json');
@@ -70,7 +106,7 @@ async function createReportFiles() {
   await createReportFile('report.lint.json');
 }
 
-function printReport(reportFileName) {
+export function printReport(reportFileName) {
   const report = require(`../${reportFileName}`);
   if (!Object.keys(report).length) return;
   const formatted = Object.entries(report).reduce((acc, [key, value]) => {
@@ -86,7 +122,7 @@ function printReport(reportFileName) {
 
 }
 
-function printReports() {
+export function printReports() {
   printReport('report.create.json');
   printReport('report.build.json');
   printReport('report.files.json');
@@ -94,13 +130,3 @@ function printReports() {
   printReport('report.test.json');
   printReport('report.local.json');
 }
-
-module.exports = {
-  getConfigDirectory,
-  getConfigFile,
-  getPresetFlag,
-  getPreset,
-  createAppsDir,
-  createReportFiles,
-  printReports
-};

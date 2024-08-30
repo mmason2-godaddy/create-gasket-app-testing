@@ -26,10 +26,26 @@ Apps are created in the `__apps__` directory.
 Create a `.env` file in the root of the project with the following:
 
 ```sh
+# open source
 OS_PRESET_NEXTJS=<path>
 OS_PRESET_API=path
-BUILD_APPS=1 # Build the apps post create
+
+# internal
+INTERNAL_PRESET_WEBAPP=<path>
+INTERNAL_PRESET_API=<path>
+INTERNAL_PRESET_HCS=<path>
+INTERNAL_REGISTRY=<private-registry>
+
+# Skip local package prompt
+USE_LOCAL=1
+
+# Build the apps post create
+RUN_BUILD=1
 ```
+
+## Internal Presets
+
+The internal preset options will be available when the proper environment variables are set. Currently there is only local package(preset-path) support for internal presets.
 
 ## Reports
 

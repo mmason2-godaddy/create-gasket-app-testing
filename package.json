@@ -11,6 +11,7 @@
     "clean:files": "bash ./scripts/clean-files.sh",
     "clean:next": "bash ./scripts/clean-next-dirs.sh"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

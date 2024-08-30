@@ -1,0 +1,21 @@
+{
+  "typescript": true,
+  "useAppRouter": true,
+  "nextServerType": "appRouter",
+  "nextDevProxy": false,
+  "addSitemap": false,
+  "hasGasketIntl": true,
+  "useRedux": false,
+  "appDescription": "Gasket App",
+  "packageManager": "npm",
+  "testPlugin": "none",
+  "testPlugins": [],
+  "gitInit": false,
+  "useDocs": true,
+  "useDocusaurus": true,
+  "uxp": {
+    "isGoDark": false,
+    "header": "internal-header",
+    "useRtl": false
+  }
+}

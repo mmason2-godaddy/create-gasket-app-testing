@@ -10,3 +10,4 @@ report.lint.json
 report.start.json
 report.local.json
 report.preview.json
+.npmrc
