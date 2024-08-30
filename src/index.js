@@ -7,6 +7,7 @@ import {
   runBuild,
 } from './commands/index.js';
 import {
+  writeEnvFile,
   createRegistryFile,
   createAppsDir,
   createReportFiles,
@@ -26,6 +27,7 @@ async function runCustomCommands() { } // TODO
 async function setup() {
   await createAppsDir();
   await createReportFiles();
+  await writeEnvFile();
 }
 
 async function handleArgs() {

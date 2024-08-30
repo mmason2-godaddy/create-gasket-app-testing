@@ -97,13 +97,13 @@ export async function createReportFile(filename) {
 export async function createReportFiles() {
   await createReportFile('report.create.json');
   await createReportFile('report.build.json');
-  await createReportFile('report.files.json');
-  await createReportFile('report.render.json');
-  await createReportFile('report.test.json');
-  await createReportFile('report.start.json');
-  await createReportFile('report.local.json');
-  await createReportFile('report.preview.json');
-  await createReportFile('report.lint.json');
+  // await createReportFile('report.files.json');
+  // await createReportFile('report.render.json');
+  // await createReportFile('report.test.json');
+  // await createReportFile('report.start.json');
+  // await createReportFile('report.local.json');
+  // await createReportFile('report.preview.json');
+  // await createReportFile('report.lint.json');
 }
 
 export function printReport(reportFileName) {
@@ -125,8 +125,30 @@ export function printReport(reportFileName) {
 export function printReports() {
   printReport('report.create.json');
   printReport('report.build.json');
-  printReport('report.files.json');
-  printReport('report.render.json');
-  printReport('report.test.json');
-  printReport('report.local.json');
+  // printReport('report.files.json');
+  // printReport('report.render.json');
+  // printReport('report.test.json');
+  // printReport('report.local.json');
+}
+
+export async function writeEnvFile() {
+  try {
+    await access('.env');
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      const contents = `
+# OS_PRESET_NEXTJS=/<local-path-to>/packages/gasket-preset-nextjs
+# OS_PRESET_API=/<local-path-to>/packages/gasket-preset-api
+# Run build after create
+# RUN_BUILD=1
+# Skip local package prompt and default to local packages
+# USE_LOCAL=1
+
+# INTERNAL_PRESET_WEBAPP=/<local-path-to>/packages/gasket-preset-webapp
+# INTERNAL_PRESET_API=/<local-path-to>/packages/gasket-preset-api
+# INTERNAL_PRESET_HCS=/<local-path-to>packages/gasket-preset-hcs
+# INTERNAL_REGISTRY=https://some-registry.com`;
+      await writeFile('.env', contents, 'utf8');
+    }
+  }
 }
