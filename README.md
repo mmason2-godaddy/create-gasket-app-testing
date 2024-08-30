@@ -74,7 +74,7 @@ All reports on untracked and they are in progress. Reports are populated after r
 
 ## Todo
 
-- [ ] Internal Presets
+- [x] Internal Presets
 - [ ] NPM Registry support
 - [ ] Clean up and document
 - [ ] Automate render testing
