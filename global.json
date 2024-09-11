@@ -1,9 +1,12 @@
 {
   "appDescription": "Gasket App",
   "packageManager": "npm",
-  "testPlugin": "none",
-  "testPlugins": [],
+  "testPlugin": "unit",
+  "testPlugins": [
+    "@gasket/plugin-jest"
+  ],
   "gitInit": false,
   "useDocs": true,
-  "useDocusaurus": true
+  "useDocusaurus": true,
+  "codeStyle": "godaddy"
 }

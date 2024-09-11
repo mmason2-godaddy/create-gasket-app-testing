@@ -97,9 +97,9 @@ export async function createReportFile(filename) {
 export async function createReportFiles() {
   await createReportFile('report.create.json');
   await createReportFile('report.build.json');
+  await createReportFile('report.test.json');
   // await createReportFile('report.files.json');
   // await createReportFile('report.render.json');
-  // await createReportFile('report.test.json');
   // await createReportFile('report.start.json');
   // await createReportFile('report.local.json');
   // await createReportFile('report.preview.json');
@@ -125,9 +125,9 @@ export function printReport(reportFileName) {
 export function printReports() {
   printReport('report.create.json');
   printReport('report.build.json');
+  printReport('report.test.json');
   // printReport('report.files.json');
   // printReport('report.render.json');
-  // printReport('report.test.json');
   // printReport('report.local.json');
 }
 

@@ -5,6 +5,7 @@ import questions from './questions.js';
 import {
   runCreate,
   runBuild,
+  runTest
 } from './commands/index.js';
 import {
   writeEnvFile,
@@ -20,8 +21,6 @@ async function runPreview(appType) { } // TODO
 
 async function runLint(appType) { } // TODO
 
-async function runTest(appType) { } // TODO
-
 async function runCustomCommands() { } // TODO
 
 async function setup() {
@@ -32,24 +31,29 @@ async function setup() {
 
 async function handleArgs() {
   const appTypes = questions[1].choices
-    .map(choice => choice.value).filter(type => type !== 'all');
+    .map(choice => choice.value).filter(type =>
+      type !== 'all' &&
+      type !== 'all-os' &&
+      type !== 'all-internal'
+    );
   const buildOnly = process.argv[2] === 'build_only';
   const printOnly = process.argv[2] === 'print_reports';
+  const testOnly = process.argv[2] === 'test_only';
 
-  if (printOnly) {
-    printReports();
-    return true;
+  if (
+    !buildOnly &&
+    !printOnly &&
+    !testOnly
+  ) return false;
+
+  if (printOnly) printReports();
+
+  for (const type of appTypes) {
+    if (buildOnly) await runBuild(type);
+    if (testOnly) await runTest(type);
   }
 
-  if (buildOnly) {
-    for (const type of appTypes) {
-      await runBuild(type);
-    }
-
-    return true;
-  }
-
-  return false;
+  return true;
 }
 
 async function main() {
@@ -94,10 +98,12 @@ async function main() {
     for (const type of internalAppTypes) {
       await runCreate(useLocalPackage, type);
       if (process.env.RUN_BUILD) await runBuild(type);
+      if (process.env.RUN_TEST) await runTest(appType);
     }
   } else {
     await runCreate(useLocalPackage, appType);
     if (process.env.RUN_BUILD) await runBuild(appType);
+    if (process.env.RUN_TEST) await runTest(appType);
   }
 };
 

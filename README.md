@@ -41,6 +41,9 @@ USE_LOCAL=1
 
 # Build the apps post create
 RUN_BUILD=1
+
+# Run test script post create
+RUN_TEST=1
 ```
 
 ## Internal Presets

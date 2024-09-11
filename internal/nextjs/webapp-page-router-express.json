@@ -8,8 +8,6 @@
   "useRedux": false,
   "appDescription": "Gasket App",
   "packageManager": "npm",
-  "testPlugin": "none",
-  "testPlugins": [],
   "gitInit": false,
   "useDocs": true,
   "useDocusaurus": true,

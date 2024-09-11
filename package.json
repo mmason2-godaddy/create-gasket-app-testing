@@ -7,6 +7,7 @@
     "start": "node src/index.js",
     "build": "node src/index.js build_only",
     "report": "node src/index.js print_reports",
+    "test": "node src/index.js test_only",
     "clean:apps": "rm -rf __apps__",
     "clean:files": "bash ./scripts/clean-files.sh",
     "clean:next": "bash ./scripts/clean-next-dirs.sh"
