@@ -75,6 +75,7 @@ async function main() {
     for (const type of appTypes) {
       await runCreate(useLocalPackage, type);
       if (process.env.RUN_BUILD) await runBuild(type);
+      if (process.env.RUN_TEST) await runTest(type);
     }
   } else if (appType === 'all-os') {
     const osAppTypes = appTypes
@@ -86,6 +87,7 @@ async function main() {
     for (const type of osAppTypes) {
       await runCreate(useLocalPackage, type);
       if (process.env.RUN_BUILD) await runBuild(type);
+      if (process.env.RUN_TEST) await runTest(type);
     }
 
   } else if (appType === 'all-internal') {
@@ -98,7 +100,7 @@ async function main() {
     for (const type of internalAppTypes) {
       await runCreate(useLocalPackage, type);
       if (process.env.RUN_BUILD) await runBuild(type);
-      if (process.env.RUN_TEST) await runTest(appType);
+      if (process.env.RUN_TEST) await runTest(type);
     }
   } else {
     await runCreate(useLocalPackage, appType);
