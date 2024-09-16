@@ -2,6 +2,8 @@ import path from 'path';
 import { mkdir, access, writeFile } from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import fs from 'fs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
@@ -129,6 +131,9 @@ export function printReports() {
   // printReport('report.files.json');
   // printReport('report.render.json');
   // printReport('report.local.json');
+
+  const apps = fs.readdirSync('__apps__');
+  console.log(`Total apps: ${apps.length}`);
 }
 
 export async function writeEnvFile() {
